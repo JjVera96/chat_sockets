@@ -84,36 +84,56 @@ class Servidor():
 							self.response = json.dumps({'users' : list(self.contacts.items())}).encode('utf8')
 							self.sock.send(self.response)
 
-						#Crear sala 
-						if self.cabeza == '#cR':
+						#Crear sala desde lobby
+						if self.cabeza == '#nR':
 							self.rooms[self.cuerpo] = []
 							self.rooms[self.cuerpo].append(self.sock)
 							self.sock.send('Ok'.encode('utf8'))
 
-						#Entrar a una sala
-						if self.cabeza == '#gR':
+						#Entrar a una sala desde lobby
+						if self.cabeza == '#ngR':
 							self.rooms[self.cuerpo].append(self.sock)
 							self.sock.send('Ok'.encode('utf8'))
-
-						#Eliminar sala dR
-						if self.cabeza == '#dR':
-							if self.rooms[self.cuerpo][0] == self.sock:
-								del self.rooms[self.cuerpo]
-								self.sock.send('Ok'.encode('utf8'))
-							else:
-								self.sock.send('Denegado'.encode('utf8'))
 
 						#Chat
 						if self.cabeza == 'chat':
 							self.room, self.mensaje = self.cuerpo.split('/')
 							for self.person in self.rooms[self.room]:
 								if self.person != self.s:
-									print("AQUI")
-									print(self.mensaje)
 									self.person.send(self.mensaje.encode('utf8'))
 
+						#Eliminar sala
+						if self.cabeza == '#dR':
+							pass
+							"""
+							if self.rooms[self.cuerpo][0] == self.sock:
+								del self.rooms[self.cuerpo]
+								self.sock.send('Ok'.encode('utf8'))
+							else:
+								self.sock.send('Denegado'.encode('utf8'))
+							"""
+						#Crear una sala estando en otra
+						if self.cabeza == 'cR':
+							pass
+
+						#Cambiar sala
+						if self.cabeza == 'gR':
+							pass
+
+						#Privado a alguien
+						if self.cabeza == 'privado':
+							pass
+
+						#Salir sala
+						if self.cabeza == 'eR':
+							pass
+
+						#Salir chat
+						if self.cabeza == 'exit':
+							pass
+
 def main():
-	server = Servidor('192.168.1.61', 8080)
+	server = Servidor('192.168.1.61', 8000)
 	server.run()
 
 if __name__ == '__main__':

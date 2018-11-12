@@ -53,6 +53,7 @@ class Cliente():
 			print('2. Mostrar usuarios disponibles')
 			print('3. Entrar a una sala')
 			print('4. Crea tu sala')
+			print('5. Eliminar sala')
 			self.op = int(input('Opcion: '))
 			
 			#Salir
@@ -87,7 +88,7 @@ class Cliente():
 				if len(self.data['rooms']):
 					self.nombre = input('Ingrese nombre a la sala: ')
 					if self.nombre in self.data['rooms']:
-						self.s.send('#gR-{}'.format(self.nombre).encode('utf8'))
+						self.s.send('#ngR-{}'.format(self.nombre).encode('utf8'))
 						self.data = self.s.recv(1024).decode('utf8')
 						return self.nombre
 					else:
@@ -98,10 +99,16 @@ class Cliente():
 			#Crear mi sala
 			if self.op == 4:
 				nombre = input('Ingrese nombre a la sala: ')
-				self.s.send('#cR-{}'.format(nombre).encode('utf8'))
+				self.s.send('#nR-{}'.format(nombre).encode('utf8'))
 				self.data = self.s.recv(1024).decode('utf8')
 				self.room = nombre
 				return self.room
+
+			if self.op == 5:
+				nombre = input('Ingrese nombre a la sala: ')
+				self.s.send('#dR-{}'.format(nombre).encode('utf8'))
+				self.data = self.s.recv(1024).decode('utf8')
+				print('\n{}\n'.format(self.data))
 
 	def pantalla(self):
 		sys.stdout.write('->')
@@ -119,10 +126,44 @@ class Cliente():
 					self.pantalla()
 				else:
 					self.msg = sys.stdin.readline()
-					#chat-room/username:msg
+					if self.msg[0] == '#':
+						if ' ' in self.msg:
+							self.comando, self.cuerpo = self.msg.split(' ')
+							#Enviar privado
+							if self.comando == '#private':
+								self.mensaje = '#private-{}'.format(self.cuerpo)
+							#Crear sala
+							if self.comando == '#cR':
+								self.mensaje = '#cR-{}/'.format(self.cuerpo)
+								pass
+							#Cambiar sala
+							if self.comando == '#gR':
+								self.mensaje = '#gR-{}'.format(self.cuerpo)
+								pass
+							#Mostrar usuarios
+							if self.comando == '#show'
+							self.mensaje = '#show users'
+						else:
+							self.comando = self.msg
+							#Mostrar salas
+							if self.comando == '#IR':
+								self.mensaje = 'IR'
+							#Salir 
+							if self.comando == '#exit':
+								self.mensaje = 'exit-{}:'.format(room)
+								self.s.close()
+								sys.exit()
+							#Dejar sala
+							if self.comando == '#eR':
+								self.mensaje = 'eR-{}:'.format(room)
+								break
+					else:
+						#chat-room/username:msg
+						pass
 					self.mensaje = 'chat-{}/{}:'.format(room,self.username) + self.msg
 					self.s.send(self.mensaje.encode('utf8'))
 					self.pantalla() 
+		print('\nDejaste la sala.\n')
 
 	def run(self):
 		self.menu_inicio()
@@ -132,7 +173,7 @@ class Cliente():
 			self.chat(self.room)
 
 def main():
-	cliente = Cliente('192.168.1.61', 8080)
+	cliente = Cliente('192.168.1.61', 8000)
 	cliente.run()
 
 if __name__ == "__main__":
