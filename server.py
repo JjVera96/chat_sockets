@@ -7,7 +7,7 @@ import json
 
 class Servidor():
 	def __init__(self, ip, port):
-		self.client = MongoClient('192.168.1.64', 27017)
+		self.client = MongoClient('10.253.130.254', 27017)
 		self.db = self.client.distribuidos
 		self.users = self.db.users
 		self.host = ip
@@ -167,14 +167,15 @@ class Servidor():
 						#Salir chat
 						if self.cabeza == 'exit':
 							self.username, self.room = self.cuerpo.split('/')
-							self.lista_usuarios = self.rooms[self.room]
-							self.indice = self.lista_usuarios.index(self.sock)
-							del self.lista_usuarios[self.indice]
+							if not self.room is None:
+								self.lista_usuarios = self.rooms[self.room]
+								self.indice = self.lista_usuarios.index(self.sock)
+								del self.lista_usuarios[self.indice]
 							del self.contacts[self.username]
 
 
 def main():
-	server = Servidor('192.168.1.61', 5000)
+	server = Servidor('10.253.129.41', 5000)
 	server.run()
 
 if __name__ == '__main__':

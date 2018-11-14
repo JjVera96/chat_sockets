@@ -63,6 +63,7 @@ class Cliente():
 			#Salir
 			if not self.op: 
 				print('Chat terminado')
+				self.mensaje = 'exit-{}/{}'.format(self.username, None)
 				self.s.close()
 				sys.exit()
 
@@ -199,7 +200,7 @@ class Cliente():
 			self.chat(self.room)
 
 def main():
-	cliente = Cliente('192.168.1.61', 5000)
+	cliente = Cliente('10.253.129.41', 5000)
 	cliente.run()
 
 if __name__ == "__main__":
